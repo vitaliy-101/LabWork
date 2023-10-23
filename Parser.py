@@ -19,3 +19,7 @@ class ParserFile(object):
                 hero = Hero(textHero, link, classHero)
                 hero.takeDataHero()
                 self.heroes.append(hero)
+
+    @property
+    def getHeroes(self):
+        return self.heroes
