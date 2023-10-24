@@ -1,4 +1,4 @@
-
+from Parser import ParserFile
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, BotCommand
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -17,12 +17,19 @@ desc_Techies ='......ии тыыы...... Текис!!\nБезумец, кото�
 desc_Bristleback ='......ии тыыы......Ёжж!!\nВо вселенной существует бесчисленное множество всемогущих инстанций.. А ты.. А ты ёж с камнем на веревке. Противники боятся тебя, но у тебя есть и слабые места.'
 desc_ShadowFiend ='......ии тыыы......\nГуль-гуленыш!!Ты дединсайд гульь 777. Ломаешь шмотки после первой смерти, твои тиммейты дети...'
 
-TOKEN_API = "6618629894:AAGoDYzy6iyVecnzK34Dn0AyuNQ6Xm-zhVo"
+
+parser = ParserFile()
+parser.parse()
+heroes = parser.getHeroes
+
+
+
+TOKEN_API = "6607152509:AAEthRQyAK0gHQg9rNbaqfV23z1FBvoqiQ0"
 bot = Bot(TOKEN_API)
 dp = Dispatcher(bot)
 
 question = 0
-const = 0
+
 res = 0
 
 main_kb = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -64,6 +71,14 @@ quest_1.add(quest_a1).insert(quest_a2).insert(quest_a3).insert(quest_a4).insert(
 
 keyboard = main_kb
 
+def takeNeedHeroes(classHero):
+    global heroes
+    ikb = InlineKeyboardMarkup(row_width=2)
+    for hero in heroes:
+        if hero.getClassHero == classHero:
+            ikb.insert(InlineKeyboardButton(text=hero.getNameHero, callback_data=hero.getNameHero))
+    return ikb
+
 async def on_startup(_):#лог запуска бота
     print('Бот запущен')
 
@@ -82,43 +97,54 @@ async def class_heroes_command(message: types.Message):
 
 @dp.message_handler(text='Сила')
 async def power_inform_command(message: types.Message):
-    ikb = InlineKeyboardMarkup(row_width=2)
+
+    ikb = takeNeedHeroes('Сила')
     await bot.send_message(chat_id=message.from_user.id, text= "Персонажи Силы: ", reply_markup=ikb)
 
 @dp.message_handler(text='Ловкость')
 async def power_inform_command(message: types.Message):
-    ikb = InlineKeyboardMarkup(row_width=2)
+
+    ikb = takeNeedHeroes('Ловкость')
     await bot.send_message(chat_id=message.from_user.id, text= "Персонажи Ловкости: ", reply_markup=ikb)
+
 
 @dp.message_handler(text='Универсальный')
 async def power_inform_command(message: types.Message):
-    ikb = InlineKeyboardMarkup(row_width=2)
+
+    ikb = takeNeedHeroes('Универсальный')
     await bot.send_message(chat_id=message.from_user.id, text= "Универсальные Персонажи: ", reply_markup=ikb)
+
 
 @dp.message_handler(text='Интеллект')
 async def power_inform_command(message: types.Message):
-    ikb = InlineKeyboardMarkup(row_width=2)
+
+    ikb = takeNeedHeroes('Интеллект')
     await bot.send_message(chat_id=message.from_user.id, text= "Персонажи Интеллекта: ", reply_markup=ikb)
 
 @dp.message_handler(text='Что такое дота?')
 async def dota_inform_command(message: types.Message):
-    await bot.send_message(chat_id=message.from_user.id, text="здесь инфа о доте")
+    await bot.send_message(chat_id=message.from_user.id, text=parser.getDotaInformation)
 
 @dp.message_handler(text='Назад')
 async def back_command(message: types.Message):
-    global const
-    if const == 0:
-        await bot.send_message(chat_id=message.from_user.id, text="Доступные категории:", reply_markup=main_kb)
+    await bot.send_message(chat_id=message.from_user.id, text="Доступные категории:", reply_markup=main_kb)
     global keyboard
     keyboard = main_kb
 
 @dp.callback_query_handler()
 async def choice_callback(callback: types.CallbackQuery):
-    await bot.send_message(chat_id=callback.from_user.id, text="Доступные категории:")
+    global heroes, const
+    for hero in heroes:
+        if callback.data == hero.getNameHero:
+            abilitiesList = hero.getAbilitiesHero.getAbilitiesList
+            stata = ""
+            for key in abilitiesList:
+                stata += "<em>" + key + ": " +  "</em>" + abilitiesList[key] + "\n"
+            await bot.send_message(callback.from_user.id, text = "<b>Персонаж: </b>" + hero.getNameHero  + "\n"
+                                   + "<b>Класс: </b>" + hero.getClassHero + "\n" + hero.getInformation + "\n" +
+                                   "<b>Характеристики:</b>\n" + stata, parse_mode="HTML", reply_markup=hero_kb)
+            break
 
-@dp.message_handler(text='Персонажи игры')
-async def class_heroes_command(message: types.Message):
-    await bot.send_message(chat_id=message.from_user.id, text =HELLOW, parse_mode="HTML", reply_markup=main_kb)
 
 @dp.message_handler(text='Кто ты из Доты 2?')
 async def dota_inform_command(message: types.Message):
