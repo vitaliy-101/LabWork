@@ -29,7 +29,7 @@ bot = Bot(TOKEN_API)
 dp = Dispatcher(bot)
 
 question = 0
-
+const = 0
 res = 0
 
 main_kb = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -127,22 +127,29 @@ async def dota_inform_command(message: types.Message):
 
 @dp.message_handler(text='Назад')
 async def back_command(message: types.Message):
-    await bot.send_message(chat_id=message.from_user.id, text="Доступные категории:", reply_markup=main_kb)
+    global const
+    if const == 0:
+        await bot.send_message(chat_id=message.from_user.id, text="Доступные категории:", reply_markup=main_kb)
+    else:
+        const = 0
+        await bot.send_message(chat_id=message.from_user.id, text="Доступные категории:", reply_markup=class_hero_kb)
     global keyboard
     keyboard = main_kb
 
 @dp.callback_query_handler()
 async def choice_callback(callback: types.CallbackQuery):
     global heroes, const
+    const = 1
     for hero in heroes:
         if callback.data == hero.getNameHero:
             abilitiesList = hero.getAbilitiesHero.getAbilitiesList
             stata = ""
             for key in abilitiesList:
                 stata += "<em>" + key + ": " +  "</em>" + abilitiesList[key] + "\n"
-            await bot.send_message(callback.from_user.id, text = "<b>Персонаж: </b>" + hero.getNameHero  + "\n"
-                                   + "<b>Класс: </b>" + hero.getClassHero + "\n" + hero.getInformation + "\n" +
-                                   "<b>Характеристики:</b>\n" + stata, parse_mode="HTML", reply_markup=hero_kb)
+            await bot.send_message(callback.from_user.id, text = "<b>Персонаж: </b>" + hero.getNameHero  + "\n\n"
+                                   + "<b>Класс: </b>" + hero.getClassHero + "\n\n" + hero.getInformation + "\n\n" +
+                                   "<b>Характеристики:</b>\n\n" + stata, parse_mode="HTML")
+            await bot.send_photo(callback.from_user.id, photo=hero.getPhoto, reply_markup=hero_kb)
             break
 
 

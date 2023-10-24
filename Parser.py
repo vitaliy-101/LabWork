@@ -26,6 +26,7 @@ class ParserFile(object):
                 textHero = heroLink.getText().lstrip().rstrip()
                 hero = Hero(textHero, link, classHero)
                 hero.takeDataHero()
+                hero.takePhoto()
                 self.heroes.append(hero)
 
     @property
