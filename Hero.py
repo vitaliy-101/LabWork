@@ -32,6 +32,10 @@ class Hero(object):
     def getAbilitiesHero(self):
         return self.abilities
 
+    @property
+    def getHeroUrl(self):
+        return self.heroUrl
+
 
     def takePhoto(self):
         nameHero = str(self.getNameHero)
@@ -43,7 +47,7 @@ class Hero(object):
             self.photo = "https://dota2.ru/img/heroes/" + nameHero.lower() + "/icon.jpg"
     def takeDataHero(self):
         self.createInformation()
-        self.abilities = Abilities(self.heroUrl)
+        self.abilities = Abilities(self.getHeroUrl)
         self.abilities.createAbilitiesList()
 
 
