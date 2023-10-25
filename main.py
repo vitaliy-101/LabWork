@@ -236,6 +236,16 @@ async def question1(message: types.Message):
     global keyboard
     keyboard = quest_1
 
+
+@dp.message_handler(content_types=types.ContentType.ANIMATION)
+async def echo_gif(message: types.Message):
+    await message.reply_animation(message.animation.file_id)
+
+@dp.message_handler(content_types=types.ContentType.STICKER)
+async def echo_sticker(message: types.Message):
+    await message.reply_sticker(message.sticker.file_id)
+
+
 @dp.message_handler()
 async def questions(message: types.Message):
     if ((message.text == "A.")|(message.text == "B.")|(message.text == "C.")|(message.text == "D.")|(message.text == "E.")):
@@ -386,13 +396,6 @@ async def questions(message: types.Message):
                                        text="Просим Вас воспользоваться панелью",
                                        reply_markup=keyboard)
         
-@dp.message_handler(content_types=types.ContentType.ANIMATION)
-async def echo_gif(message: types.Message):
-    await message.reply_animation(message.animation.file_id)
-
-@dp.message_handler(content_types=types.ContentType.STICKER)
-async def echo_sticker(message: types.Message):
-    await message.reply_sticker(message.sticker.file_id)
 
 
 
