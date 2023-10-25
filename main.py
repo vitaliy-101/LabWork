@@ -155,6 +155,8 @@ async def choice_callback(callback: types.CallbackQuery):
 
 @dp.message_handler(text='Кто ты из Доты 2?')
 async def dota_inform_command(message: types.Message):
+    global const
+    const = 2
     await bot.send_sticker(message.from_user.id, sticker="CAACAgIAAxkBAANgZTe_eteYqmgy2MrvdVss60gmdegAAhQTAAIQs4hK8C92yIiBkFMwBA")
     await bot.send_message(chat_id=message.from_user.id, text=message.from_user.first_name + main_questions, reply_markup=quest_ent)
     global keyboard
@@ -162,7 +164,8 @@ async def dota_inform_command(message: types.Message):
 
 @dp.message_handler(text='Вернуться в меню')
 async def back_to_menu(message: types.Message):
-    global res
+    global res, const
+    const = 0
     res = 0
     await bot.send_message(chat_id=message.from_user.id, text ="Вы вернулись в главное меню", reply_markup=main_kb)
     global keyboard
@@ -325,10 +328,19 @@ async def questions(message: types.Message):
                 await bot.send_sticker(chat_id=message.from_user.id,
                                        sticker='CAACAgQAAxkBAANjZTfb3pIjxAmZmFAMfjHpQORsVA4AApoOAAISxchTzNiSgGbrDQ0wBA')
     else:
-        await bot.send_message(chat_id=message.from_user.id,
-                                       text="Просим Вас воспользоваться панелью",
-                                       reply_markup=keyboard)
-
+        global const
+        if const == 2:
+            await bot.send_message(chat_id=message.from_user.id,
+                                           text="Просим Вас воспользоваться панелью",
+                                           reply_markup=keyboard)
+        elif const == 1:
+            await bot.send_message(chat_id=message.from_user.id,
+                                   text="Просим Вас воспользоваться панелью",
+                                   reply_markup=class_hero_kb)
+        else:
+            await bot.send_message(chat_id=message.from_user.id,
+                                   text="Просим Вас воспользоваться панелью",
+                                   reply_markup=main_kb)
 
 
 if __name__ == '__main__':
