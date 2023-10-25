@@ -61,8 +61,7 @@ parser.parse()
 heroes = parser.getHeroes
 news = ParserNews.ParsingNews()
 
-# 6607152509:AAEthRQyAK0gHQg9rNbaqfV23z1FBvoqiQ0
-TOKEN_API = "6352368468:AAGCMaqQK8fbXqAiO2S8S8IMF2MHSQvcTSw"
+TOKEN_API = "6607152509:AAEthRQyAK0gHQg9rNbaqfV23z1FBvoqiQ0"
 bot = Bot(TOKEN_API)
 dp = Dispatcher(bot)
 
