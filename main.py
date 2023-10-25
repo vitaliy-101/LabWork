@@ -30,6 +30,7 @@ dp = Dispatcher(bot)
 
 question = 0
 const = 0
+er = 0
 res = 0
 
 main_kb = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -91,6 +92,8 @@ async def start_command(message: types.Message):
 
 @dp.message_handler(text='Персонажи игры')
 async def class_heroes_command(message: types.Message):
+    global er
+    er = 1
     await bot.send_message(chat_id=message.from_user.id, text="Выберете класс персонажа:", reply_markup=class_hero_kb)
     global keyboard
     keyboard = class_hero_kb
@@ -127,10 +130,12 @@ async def dota_inform_command(message: types.Message):
 
 @dp.message_handler(text='Назад')
 async def back_command(message: types.Message):
-    global const
+    global const, er
     if const == 0:
+        er = 0
         await bot.send_message(chat_id=message.from_user.id, text="Доступные категории:", reply_markup=main_kb)
     else:
+        er = 1
         const = 0
         await bot.send_message(chat_id=message.from_user.id, text="Доступные категории:", reply_markup=class_hero_kb)
     global keyboard
@@ -138,8 +143,9 @@ async def back_command(message: types.Message):
 
 @dp.callback_query_handler()
 async def choice_callback(callback: types.CallbackQuery):
-    global heroes, const
+    global heroes, const, er
     const = 1
+    er = 2
     for hero in heroes:
         if callback.data == hero.getNameHero:
             abilitiesList = hero.getAbilitiesHero.getAbilitiesList
@@ -155,8 +161,8 @@ async def choice_callback(callback: types.CallbackQuery):
 
 @dp.message_handler(text='Кто ты из Доты 2?')
 async def dota_inform_command(message: types.Message):
-    global const
-    const = 2
+    global er
+    er = 3
     await bot.send_sticker(message.from_user.id, sticker="CAACAgIAAxkBAANgZTe_eteYqmgy2MrvdVss60gmdegAAhQTAAIQs4hK8C92yIiBkFMwBA")
     await bot.send_message(chat_id=message.from_user.id, text=message.from_user.first_name + main_questions, reply_markup=quest_ent)
     global keyboard
@@ -164,8 +170,9 @@ async def dota_inform_command(message: types.Message):
 
 @dp.message_handler(text='Вернуться в меню')
 async def back_to_menu(message: types.Message):
-    global res, const
+    global res, const, er
     const = 0
+    er = 0
     res = 0
     await bot.send_message(chat_id=message.from_user.id, text ="Вы вернулись в главное меню", reply_markup=main_kb)
     global keyboard
@@ -188,6 +195,8 @@ async def questions(message: types.Message):
         global question
         global res
         global keyboard
+        global er
+        er = 3
         keyboard = quest_1
         question += 1
         if(message.text == "A."):
@@ -329,11 +338,15 @@ async def questions(message: types.Message):
                                        sticker='CAACAgQAAxkBAANjZTfb3pIjxAmZmFAMfjHpQORsVA4AApoOAAISxchTzNiSgGbrDQ0wBA')
     else:
         global const
-        if const == 2:
+        if er == 3:
             await bot.send_message(chat_id=message.from_user.id,
                                            text="Просим Вас воспользоваться панелью",
                                            reply_markup=keyboard)
-        elif const == 1:
+        elif er == 2:
+            await bot.send_message(chat_id=message.from_user.id,
+                                   text="Просим Вас воспользоваться панелью",
+                                   reply_markup=hero_kb)
+        elif er == 1:
             await bot.send_message(chat_id=message.from_user.id,
                                    text="Просим Вас воспользоваться панелью",
                                    reply_markup=class_hero_kb)
