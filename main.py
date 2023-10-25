@@ -404,10 +404,6 @@ async def questions(message: types.Message):
                 await bot.send_sticker(chat_id=message.from_user.id,
                                        sticker='CAACAgQAAxkBAANjZTfb3pIjxAmZmFAMfjHpQORsVA4AApoOAAISxchTzNiSgGbrDQ0wBA')
     else:
-
-        await bot.send_message(chat_id=message.from_user.id,
-                                       text="Просим Вас воспользоваться панелью",
-                                       reply_markup=keyboard)
         global const
         if er == 3:
             await bot.send_message(chat_id=message.from_user.id,
