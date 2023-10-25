@@ -1,4 +1,5 @@
 from Parser import ParserFile
+import ParserNews
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, BotCommand
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -17,14 +18,51 @@ desc_Techies ='......ии тыыы...... Текис!!\nБезумец, кото�
 desc_Bristleback ='......ии тыыы......Ёжж!!\nВо вселенной существует бесчисленное множество всемогущих инстанций.. А ты.. А ты ёж с камнем на веревке. Противники боятся тебя, но у тебя есть и слабые места.'
 desc_ShadowFiend ='......ии тыыы......\nГуль-гуленыш!!Ты дединсайд гульь 777. Ломаешь шмотки после первой смерти, твои тиммейты дети...'
 
+dota_resurce = """
+***Информация и соц. сети***
+
+>1. [официальный сайт Dota 2](https://ru.dota2.com/ )
+>2. [раздел по игре на популярном англоязычном сайте. Ведутся обсуждения на разные темы, а также там присутствуют разработчики](https://www.reddit.com/r/DotA2/ )
+>3. [официальный Твиттер Dota 2](https://twitter.com/DOTA2 )
+>4.  [инсайдер, зачастую информация об обновлениях появляется сначала там](https://twitter.com/wykrhm)
+>5. [состояние серверов Стима, в том числе и Доты](https://steamstat.us/)
+
+***Статистика***
+
+>1. [матчи, анализы и многое-многое другое](https://ru.dotabuff.com/ )
+>2. [статистика по турнирам и другие полезности](https://stats.spectral.gg/lrg2/ )
+
+***База знаний***
+
+>1. [Герои, Предметы, Гайды, Тактика. поддержка, Статьи, Стоимость инвентаря](https://dota2.ru)
+>2. [англоязычная вики. Интерес представляют разделы механики и косметических предметов](https://dota2.gamepedia.com/Dota_2_Wiki)
+
+***Киберспорт***
+
+>1. [самая крупная англоязычная вики по киберспорту, плюс есть инфа по Доте](https://liquipedia.net/dota2/)
+>2. [англоязычный сайт с рейтингом профессиональных команд, так же там есть новости, турниры, матчи, стримы, записи игр](https://www.gosugamers.net/dota2/rankings)
+>3. [сайт, на котором можно смотреть игры любого киберспортсмена с основного и фейк аккаунта](http://www.dota2protracker.com/ )
+
+***Обучение и тренировка***
+
+>1. [платный помощник от Valve](https://www.dota2.com/plus)
+>2. https://gosu.ai/ [персональный ассистент, который будет анализировать ваши игры и подсказывать, как играть лучше](https://gosu.ai/ )
+>3. [интерактивная карта Доты, на которой можно ставить варды и многое другое](https://devilesk.com/dota2/apps/interactivemap/)
+>4. [тренировка инвокера](http://www.invokergame.com/ )
+
+***Другие полезные сайты***
+
+>1. [сайт для просмотра косметических предметов на героях](https://dotaloadout.com/)
+>2. [оценка стоимости инвентаря](https://steam.tools/itemvalue/)
+"""
 
 parser = ParserFile()
 parser.parse()
 heroes = parser.getHeroes
+news = ParserNews.ParsingNews()
 
-
-
-TOKEN_API = "6607152509:AAEthRQyAK0gHQg9rNbaqfV23z1FBvoqiQ0"
+# 6607152509:AAEthRQyAK0gHQg9rNbaqfV23z1FBvoqiQ0
+TOKEN_API = "6352368468:AAGCMaqQK8fbXqAiO2S8S8IMF2MHSQvcTSw"
 bot = Bot(TOKEN_API)
 dp = Dispatcher(bot)
 
@@ -36,7 +74,8 @@ main_kb = ReplyKeyboardMarkup(resize_keyboard=True)
 main_b1 = KeyboardButton('Что такое дота?')
 main_b2 = KeyboardButton('Персонажи игры')
 main_b3 = KeyboardButton('Кто ты из Доты 2?')
-main_kb.add(main_b1).insert(main_b2).add(main_b3)
+main_b4 = KeyboardButton('Полезная информация')
+main_kb.add(main_b1).insert(main_b2).add(main_b3).insert(main_b4)
 
 class_hero_kb = ReplyKeyboardMarkup(resize_keyboard=True)
 class_hero_b1 = KeyboardButton('Сила')
@@ -68,6 +107,12 @@ quest_a4 = KeyboardButton('D.')
 quest_a5 = KeyboardButton('E.')
 quest_a6 = KeyboardButton('Вернуться в меню')
 quest_1.add(quest_a1).insert(quest_a2).insert(quest_a3).insert(quest_a4).insert(quest_a5).add(quest_a6)
+
+resurse_kb = ReplyKeyboardMarkup(resize_keyboard=True)
+resurce_1 = KeyboardButton('Интересные ресурсы')
+resurce_2 = KeyboardButton('Последние обновления')
+resurce_3 = KeyboardButton('Вернуться в меню')
+resurse_kb.add(resurce_1).insert(resurce_2).add(resurce_3)
 
 keyboard = main_kb
 
@@ -124,6 +169,19 @@ async def power_inform_command(message: types.Message):
 @dp.message_handler(text='Что такое дота?')
 async def dota_inform_command(message: types.Message):
     await bot.send_message(chat_id=message.from_user.id, text=parser.getDotaInformation)
+
+@dp.message_handler(text='Полезная информация')
+async def dota_informarion(message: types.Message):
+    await bot.send_message(chat_id=message.from_user.id, text= "Выберете категорию:", reply_markup=resurse_kb)
+    global keyboard
+    keyboard = resurse_kb
+
+@dp.message_handler(text='Интересные ресурсы')
+async def dota_intresting_resurce(message: types.Message):
+    await bot.send_message(chat_id=message.from_user.id, text=dota_resurce, parse_mode="Markdown", reply_markup=resurse_kb)
+@dp.message_handler(text='Последние обновления')
+async def dota_news(message: types.Message):
+    await bot.send_message(chat_id=message.from_user.id, text=news, parse_mode="Markdown", reply_markup=resurse_kb)
 
 @dp.message_handler(text='Назад')
 async def back_command(message: types.Message):
@@ -328,6 +386,14 @@ async def questions(message: types.Message):
         await bot.send_message(chat_id=message.from_user.id,
                                        text="Просим Вас воспользоваться панелью",
                                        reply_markup=keyboard)
+        
+@dp.message_handler(content_types=types.ContentType.ANIMATION)
+async def echo_gif(message: types.Message):
+    await message.reply_animation(message.animation.file_id)
+
+@dp.message_handler(content_types=types.ContentType.STICKER)
+async def echo_sticker(message: types.Message):
+    await message.reply_sticker(message.sticker.file_id)
 
 
 
